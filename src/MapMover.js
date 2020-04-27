@@ -65,49 +65,73 @@ function moveTheMap(manifest) {
     var YSwap = []; //  region on the top side of the map
     var XYSwap = []; // region at the top-right side of the map
     
-    for (var x = map.size.x - MAP_BORDER_SIZE - manifest.x; x < map.size.x - MAP_BORDER_SIZE; x++) { // fill the X swap array
+    // fill the X swap array
+    for (var x = 0; x < manifest.x; x++) {
         for (var y = MAP_BORDER_SIZE; y < map.size.y - MAP_BORDER_SIZE - manifest.y; y++) {
-            var tile = map.getTile(x, y);
+            var tile = map.getTile(x + map.size.x - MAP_BORDER_SIZE - manifest.x, y);
             if (tile) {
-                for (var i = 0; i< tile.numElements; i++) {
-                    XSwap.push(tile.getElement(i));
-                }
+                XSwap.push(tile.data);
+            }
+        }
+    }
+    // fill the Y swap array
+    for (var x = MAP_BORDER_SIZE; x < map.size.x - MAP_BORDER_SIZE - manifest.x; x++) {
+        for (var y = 0; y < manifest.y; y++) {
+            var tile = map.getTile(x, y + map.size.y - MAP_BORDER_SIZE - manifest.y);
+            if (tile) {
+                YSwap.push(tile.data);
+            }
+        }
+    }
+    // fill the XY swap array
+    for (var x = 0; x < manifest.x; x++) {
+        for (var y = 0; y < manifest.y; y++) {
+            var tile = map.getTile(x + map.size.x - MAP_BORDER_SIZE - manifest.x, y + map.size.y - MAP_BORDER_SIZE - manifest.y);
+            if (tile) {
+                XYSwap.push(tile.data);
             }
         }
     }
     
-    for (var x = MAP_BORDER_SIZE; x < map.size.x - MAP_BORDER_SIZE - manifest.x; x++) { // fill the Y swap array
-        for (var y = map.size.y - MAP_BORDER_SIZE - manifest.y; y < map.size.y - MAP_BORDER_SIZE; y++) {
-            var tile = map.getTile(x, y);
-            if (tile) {
-                for (var i = 0; i< tile.numElements; i++) {
-                    YSwap.push(tile.getElement(i));
-                }
-            }
-        }
-    }
-    
-    for (var x = map.size.x - MAP_BORDER_SIZE - manifest.x; x < map.size.x - MAP_BORDER_SIZE; x++) { // fill the XY swap array
-        for (var y = map.size.y - MAP_BORDER_SIZE - manifest.y; y < map.size.y - MAP_BORDER_SIZE; y++) {
-            var tile = map.getTile(x, y);
-            if (tile) {
-                for (var i = 0; i< tile.numElements; i++) {
-                    XYSwap.push(tile.getElement(i));
-                }
-            }
-        }
-    }
-    
+    // shift all tiles
     for (var x = map.size.x - MAP_BORDER_SIZE - 1; x >= manifest.x+MAP_BORDER_SIZE; x--) {
         for (var y = map.size.y - MAP_BORDER_SIZE - 1; y >= manifest.y+MAP_BORDER_SIZE; y--) {
             var newTile = map.getTile(x,y);
             var oldTile = map.getTile(x-manifest.x,y-manifest.y);
-            stripTile(newTile);
             for (var i = 0; i < oldTile.numElements; i++) {
-                newTile.insertElement(oldTile.getElement(i));
+                newTile.data = oldTile.data;
             }
         }
     }
+    // apply X swap
+    for (var x = 0; x < manifest.x; x++) {
+        for (var y = 0; y < map.size.y - MAP_BORDER_SIZE*2 - manifest.y; y++) {
+            var tile = map.getTile(x + MAP_BORDER_SIZE, y + MAP_BORDER_SIZE + manifest.y);
+            if (tile) {
+                tile.data = XSwap[x*(map.size.y - MAP_BORDER_SIZE*2 - manifest.y) + y];
+            }
+        }
+    }
+    // apply Y swap
+    for (var x = 0; x < map.size.x - MAP_BORDER_SIZE*2 - manifest.x; x++) {
+        for (var y = 0; y < manifest.y; y++) {
+            var tile = map.getTile(x + MAP_BORDER_SIZE + manifest.x, y + MAP_BORDER_SIZE);
+            if (tile) {
+                tile.data = YSwap[x*manifest.y + y];
+            }
+        }
+    }
+    // apply XY swap
+    for (var x = 0; x < manifest.x; x++) {
+        for (var y = 0; y < manifest.y; y++) {
+            var tile = map.getTile(x + MAP_BORDER_SIZE, y + MAP_BORDER_SIZE);
+            if (tile) {
+                tile.data = XYSwap[x*manifest.y + y];
+            }
+        }
+    }
+    //todo: insert elements from XSwap, YSwap, and XYSwap
+    //todo: hook up entrances to their queue lines
 }
 
 function queryOrExecuteAction(manifest, execute) {
@@ -263,11 +287,11 @@ function createWidgets() {
     
     var warningLabel = {
         type : "label",
-        text : "Use: orient the map so you are looking south\n(compass needle facing down). X is tothe right,\nand Y is to the left.\nBE PATIENT AFTER CLICKING APPLY",
+        text : "Before use, you must DELETE every instance of\nthe following:\n - ride stations\n - ride entrance huts\n - tower rides\n - park entrances\n - peeps\n - ride cars\nFAILURE to do so will result in non-working rides\nand park entrances, peeps falling into the void,\nand crashing ride cars. These must be re-built\nafter you are satisfied with the new position.",
         x : 5,
         y : OverallHeight + 10,
         width : OverallWidth - 10,
-        height : 48
+        height : 120
     }
     warningGroup.height = warningLabel.height + 15;
     OverallHeight = warningGroup.y + warningGroup.height;
