@@ -11,6 +11,9 @@ var TOPBAR_HEIGHT = 15;
 var OverallHeight = TOPBAR_HEIGHT; // updated as the ui is built (like a vBox)
 var OverallWidth = 270; //fixed
 
+var MAP_BORDER_SIZE = 1
+var PIXELS_PER_TILE = 16
+
 var Window;
 var Widgets;
 
@@ -20,7 +23,6 @@ var selectedXOffset = 0
 var selectedYOffset = 0
 var lastMapSizeX = 0
 var lastMapSizeY = 0
-var MAP_BORDER_SIZE = 1
 
 function GetWidget(widget) {
     if (Window) {
@@ -53,12 +55,6 @@ function updateSpinner(widget, value, axis) {
 }
 
 /* Perform the work */
-
-function stripTile(tile) {
-    for (var i = tile.numElements - 1; i >= 0 ; i--) { // goes in reverse order to delete tile elements
-        tile.removeElement(i);
-    }
-}
 
 function moveTheMap(manifest) {
     var XSwap = []; //  region on the right side of the map
@@ -130,8 +126,15 @@ function moveTheMap(manifest) {
             }
         }
     }
-    //todo: insert elements from XSwap, YSwap, and XYSwap
-    //todo: hook up entrances to their queue lines
+    for (var i = 0; i < map.numEntities; i++) {
+        var entity = map.getEntitiy(i);
+        entity.x = MAP_BORDER_SIZE*PIXELS_PER_TILE + (entity.x - MAP_BORDER_SIZE * PIXELS_PER_TILE + manifest.x * PIXELS_PER_TILE)%((map.size.x - MAP_BORDER_SIZE*2) * PIXELS_PER_TILE)
+        entity.y = MAP_BORDER_SIZE*PIXELS_PER_TILE + (entity.y - MAP_BORDER_SIZE * PIXELS_PER_TILE + manifest.y * PIXELS_PER_TILE)%((map.size.y - MAP_BORDER_SIZE*2) * PIXELS_PER_TILE)
+    }
+    
+    //todo: fix ride station tile references
+    //todo: fix ride entrance tile references
+    //todo: fix park entrance tile references
 }
 
 function queryOrExecuteAction(manifest, execute) {
