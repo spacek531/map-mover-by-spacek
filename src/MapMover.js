@@ -126,12 +126,13 @@ function moveTheMap(manifest) {
             }
         }
     }
+    /*
     for (var i = 0; i < map.numEntities; i++) {
         var entity = map.getEntitiy(i);
         entity.x = MAP_BORDER_SIZE*PIXELS_PER_TILE + (entity.x - MAP_BORDER_SIZE * PIXELS_PER_TILE + manifest.x * PIXELS_PER_TILE)%((map.size.x - MAP_BORDER_SIZE*2) * PIXELS_PER_TILE)
         entity.y = MAP_BORDER_SIZE*PIXELS_PER_TILE + (entity.y - MAP_BORDER_SIZE * PIXELS_PER_TILE + manifest.y * PIXELS_PER_TILE)%((map.size.y - MAP_BORDER_SIZE*2) * PIXELS_PER_TILE)
     }
-    
+    */
     //todo: fix ride station tile references
     //todo: fix ride entrance tile references
     //todo: fix park entrance tile references
