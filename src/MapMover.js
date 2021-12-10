@@ -226,7 +226,7 @@ function createWidgets() {
         text : "asdf",
         value : 0,
         onDecrement: function() {
-            if (selectedXOffset <= -(map.size.x - 1 - MAP_BORDER_SIZE*2)) {
+            if (selectedXOffset < 0) {
                 selectedXOffset = map.size.x - 1 - MAP_BORDER_SIZE*2;
             }
             else {
@@ -236,7 +236,7 @@ function createWidgets() {
         },
         onIncrement: function() {
             if (selectedXOffset >= map.size.x - 1 - MAP_BORDER_SIZE*2) {
-                selectedXOffset = -(map.size.x - 1 - MAP_BORDER_SIZE*2);
+                selectedXOffset = 0;
             }
             else {
                 selectedXOffset++;
@@ -254,7 +254,7 @@ function createWidgets() {
         text : "asdf",
         value : 0,
         onDecrement: function() {
-            if (selectedYOffset <= -(map.size.y - 1 - MAP_BORDER_SIZE*2)) {
+            if (selectedYOffset < 0) {
                 selectedYOffset = map.size.y - 1 - MAP_BORDER_SIZE*2;
             }
             else {
@@ -264,7 +264,7 @@ function createWidgets() {
         },
         onIncrement: function() {
             if (selectedYOffset >= map.size.y - 1 - MAP_BORDER_SIZE*2) {
-                selectedYOffset = -(map.size.y - 1 - MAP_BORDER_SIZE*2);
+                selectedYOffset = 0;
             }
             else {
                 selectedYOffset++;
