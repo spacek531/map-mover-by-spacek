@@ -226,7 +226,7 @@ function createWidgets() {
         text : "asdf",
         value : 0,
         onDecrement: function() {
-            if (selectedXOffset < 0) {
+            if (selectedXOffset <= 0) {
                 selectedXOffset = map.size.x - 1 - MAP_BORDER_SIZE*2;
             }
             else {
@@ -254,7 +254,7 @@ function createWidgets() {
         text : "asdf",
         value : 0,
         onDecrement: function() {
-            if (selectedYOffset < 0) {
+            if (selectedYOffset <= 0) {
                 selectedYOffset = map.size.y - 1 - MAP_BORDER_SIZE*2;
             }
             else {
